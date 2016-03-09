@@ -1,0 +1,3 @@
+language: javascript
+before-script: npm install jasmine
+script: jasmine

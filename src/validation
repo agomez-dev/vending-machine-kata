@@ -1,0 +1,33 @@
+
+var coinMap = {};
+
+var pennyWeight = 25;
+var pennySize = 1;
+
+var nickleWeight = 10;
+var nickleSize = 10;
+
+var dimeWeight = 5;
+var dimeSize = 10;
+
+var quarterWeight = 1;
+var quaterSize = 25;
+
+coinMap[pennyWeight] = "P";
+coinMap[pennySize] = "P";
+
+coinMap[nickleWeight] = "N";
+coinMap[nickleSize] = "N";
+
+coinMap[dimeWeight] = "D";
+coinMap[dimeSize] = "D";
+
+coinMap[quarterWeight] = "Q";
+coinMap[quaterSize] = "Q";
+
+this.validateCoin = function (coin) {
+	//Could be shorter
+
+    return coinMap[coin.weight] == coinMap[coin.size] && (coinMap[coin.weight] != "P" || coinMap[coin.size] != "P")
+
+}

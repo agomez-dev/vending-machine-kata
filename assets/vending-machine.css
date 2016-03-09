@@ -1,0 +1,83 @@
+*,
+*:after,
+*:before {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+
+*:before,
+*:after {
+  display: table-cell;
+  content: '';
+}
+
+*:after { clear: both; }
+
+body { font-family: helvetica, arial, sans-serif; }
+
+.container {
+  margin: 0 auto;
+  width: 350px;
+}
+
+.calculator {
+  padding: 10px;
+  background-color: #ccc;
+  border-radius: 5px;
+  /*this is to remove space between divs that are inline-block*/
+  font-size: 0;
+}
+
+.calculator > input[type=text] {
+  width: 100%;
+  height: 50px;
+  border: none;
+  background-color: #eee;
+  text-align: center;
+  font-size: 30px;
+  padding-right: 10px;
+}
+
+.calculator .row { margin-top: 10px; }
+
+.calculator .key {
+  width: 78.7px;
+  display: inline-block;
+  background-color: black;
+  color: white;
+  font-size: 1rem;
+  margin-right: 5px;
+  border-radius: 5px;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+}
+
+.calculator .key:hover { cursor: pointer; }
+
+.key.hidden {background-color: #ccc;}
+
+.key.return {width: 157.4px;}
+
+.key.last { margin-right: 0px; }
+
+.key.action { background-color: #646060; }
+
+::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+    color:    black;
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+   color:    black;
+   opacity:  1;
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+   color:    black;
+   opacity:  1;
+}
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+   color:    black;
+}
+:placeholder-shown { /* Standard (https://drafts.csswg.org/selectors-4/#placeholder) */
+  color:    black;
+}

@@ -3,7 +3,6 @@ function Machine(Nickels, Dimes, Quarters)
     this.Nickels = Nickels;
     this.Dimes = Dimes;
     this.Quarters = Quarters;
-    this.Message = "INSERT COINS";
 
     var coinQueue = {};
 
@@ -37,18 +36,12 @@ function Machine(Nickels, Dimes, Quarters)
     	{
     		coinQueue[Coin.name] += 1;
     		coinQueue["Total"] += Coin.value;
-    		if(coinQueue["Total"] == 0) {
-    			Message = "INSERT COINS";
-    		}
-    		else {
-    			Message = String(coinQueue["Total"]);
-    		}
     	}
     }
 
     function coinReturn(){
     	resetQueue();
-    	Message = "INSERT COINS";
+    	Message = String("INSERT COINS");
     }
 
     function resetQueue(){
@@ -63,7 +56,10 @@ function Machine(Nickels, Dimes, Quarters)
     }
 
     function displayMessage(){
-    	return Message;
+    	if(coinQueue["Total"] == 0)
+            return String("INSERT COINS");
+        else
+            return String(coinQueue["Total"]);
     }
 
     function queueCount(Coin){

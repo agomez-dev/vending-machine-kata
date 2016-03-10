@@ -36,6 +36,7 @@ describe("Machine", function() {
     it("should reject pennies", function() {
       machine.insertCoin(penny);
       expect(machine.readTotal()).toEqual(0);
+      expect(machine.displayMessage()).toEqual("INSERT COINS");
     });
 
   });
@@ -109,6 +110,7 @@ describe("Machine", function() {
       expect(machine.queueCount(nickel)).toEqual(0);
       expect(machine.queueCount(quarter)).toEqual(0);
       expect(machine.queueCount(dime)).toEqual(0);
+      expect(machine.displayMessage()).toEqual("INSERT COINS");
 
     });
 

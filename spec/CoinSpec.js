@@ -3,6 +3,13 @@ describe("Coin", function() {
   var Coin = require("../src/Coin.js");
 
   describe("creation", function() {
+
+    it("should generate a null/empty/unusable object", function() {
+      var coin = new Coin(3);
+
+      expect(coin).toBeFalsy;
+    });
+
     it("should generate a penny with the proper size and weight", function() {
 
      var coin = new Coin(1);

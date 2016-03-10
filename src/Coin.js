@@ -26,7 +26,11 @@ function Coin(coinValue)
         this.value = coinValue;
         break;
     default:
-        return null;
+        this.weight = null;
+        this.size = null;
+        this.name = null;
+        this.value = null;
+        break;
        }
 }
 

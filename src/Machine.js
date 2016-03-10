@@ -41,7 +41,6 @@ function Machine(Nickels, Dimes, Quarters)
 
     function coinReturn(){
     	resetQueue();
-    	Message = String("INSERT COINS");
     }
 
     function resetQueue(){
@@ -58,12 +57,61 @@ function Machine(Nickels, Dimes, Quarters)
     function displayMessage(){
     	if(coinQueue["Total"] == 0)
             return String("INSERT COINS");
-        else
-            return String(coinQueue["Total"]);
+        else {
+            if(coinQueue["Total"] < 100)
+                return String(coinQueue["Total"]);
+            else
+                return String((coinQueue["Total"]/100).toFixed(2));
+        }
     }
 
     function queueCount(Coin){
     	return coinQueue[Coin.name];
+    }
+/* Not a very DRY method, but this was towards the end of it */
+    function makePurchase(Item){
+        switch(Item){
+            case 0:
+                if(coinQueue["Total"] < 100){
+                    return "PRICE";
+                } else{
+                    if (Inventory.purchase(Item)){
+                        resetQueue();
+                        return "THANK YOU";
+                    }
+                    else
+                        return "SOLD OUT";
+                }
+            break;
+            case 1:
+                if(coinQueue["Total"] < 50){
+                    return "PRICE";
+                } else{
+                    if (Inventory.purchase(Item)){
+                        resetQueue();
+                        return "THANK YOU";
+                        
+                    }
+                    else
+                        return "SOLD OUT";
+                }
+                
+            break;
+            case 2:
+                if(coinQueue["Total"] < 65){
+                    return "PRICE";
+                } else{
+                    if (Inventory.purchase(Item)){
+                        resetQueue();
+                        return "THANK YOU";
+                        
+                    }
+                    else
+                        return "SOLD OUT";
+                }
+            break;
+            default:
+            break;}
     }
 
     return{
@@ -72,7 +120,8 @@ function Machine(Nickels, Dimes, Quarters)
     	resetQueue: resetQueue,
     	readTotal: readTotal,
     	displayMessage: displayMessage,
-    	queueCount: queueCount
+    	queueCount: queueCount,
+        makePurchase: makePurchase
     };
 }
 

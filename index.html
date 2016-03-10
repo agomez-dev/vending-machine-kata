@@ -1,22 +1,26 @@
-<link rel="stylesheet" type="text/css" href="css/vending-machine.css">
+<link rel="stylesheet" type="text/css" href="assets/vending-machine.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script src="src/Coin.js"></script>
+<script src="src/Machine.js"></script>
+<script src="src/Inventory.js"></script>
+<script src="src/Main.js"></script>
 <div class="container">
 <div class="calculator">
-  <input type="text" placeholder="INSERT COINS" readonly>
+  <input type="text" placeholder="INSERT COINS" id="display" readonly>
   <div class="row">
-    <div class="key">1&#162;</div>
-    <div class="key">5&#162;</div>
-    <div class="key">10&#162;</div>
-    <div class="key last">25&#162;</div>
+    <div class="key" id="Penny">1&#162;</div>
+    <div class="key" id="Nickel">5&#162;</div>
+    <div class="key" id="Dime">10&#162;</div>
+    <div class="key last" id="Quarter">25&#162;</div>
   </div>
   <div class="row">
-    <div class="key">Soda</div>
-    <div class="key">Candy</div>
-    <div class="key last">Chips</div>
+    <div class="key" id="Cola">Cola</div>
+    <div class="key" id="Candy">Candy</div>
+    <div class="key last" id="Chips">Chips</div>
   </div>
   <div class="row">
-    <div class="key return">Coin Return</div>
+    <div class="key return" id="Return">Coin Return</div>
     <div class="key hidden"></div>
-    <div class="key last">Coins</div>
   </div>
 </div>
 </div>

@@ -4,56 +4,34 @@ by passing the desired amount of each as parameters */
 function Inventory(Cola, Chips, Candy)
 {
     var List = new Array(3);
-    var Purchase = {Item: "", Cost: ""};
 
-    for(var i = 0; i < 3; i++) {
-        List[i] = new Array(2);
-    }
-
-    List[0][1] = 1;
-    List[1][1] = 0.50;
-    List[2][1] = 0.65;
-
-    List[0][0] = Cola;
-    List[1][0] = Chips;
-    List[2][0] = Candy;
+    List[0] = Cola;
+    List[1] = Chips;
+    List[2] = Candy;
 
     function purchase(Item) {
 
-        if(List[Item][0] > 0){
-            List[Item][0] -= 1;
+        if(List[Item] > 0){
+            List[Item] -= 1;
+            return true;
         }
         else
         {
-        return Purchase = {Item: "SOLD OUT", Cost: 0};
+        return false;
         }
-
-        switch(Item) {
-    case 0:
-        Purchase = {Item: "Cola", Cost: List[Item][1]};
-        return Purchase;
-    case 1:
-        Purchase = {Item: "Chips", Cost: List[Item][1]};
-        return Purchase;
-    case 2:
-        Purchase = {Item: "Candy", Cost: List[Item][1]};
-        return Purchase;
-    default:
-        break;
-       }
     }
 
     function colaCount(){
-        return List[0][0];
+        return List[0];
     }
 
     function chipsCount(){
-        return List[1][0];
+        return List[1];
 
     }
 
     function candyCount(){
-        return List[2][0];
+        return List[2];
     }
     return{
     	purchase: purchase,

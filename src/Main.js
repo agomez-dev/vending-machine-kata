@@ -5,9 +5,11 @@ var Quarter = new Coin(25);
 
 var Inventory = new Inventory(10, 10, 10);
 
-var Machine = new Machine(5, 5, 5);
+var Machine = new Machine(0, 0, 0);
+
 
 $( document ).ready(function() {
+$("#display").attr("placeholder", Machine.displayMessage());
 $("#Penny").click(function(){
 	Machine.insertCoin(Penny);
 	$("#display").attr("placeholder", Machine.displayMessage());

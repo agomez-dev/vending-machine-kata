@@ -2,6 +2,7 @@ describe("Machine", function() {
 
   var Coin = require("../src/Coin");
   var Machine = require("../src/Machine");
+  var Inventory = require("../src/Inventory");
   var machine;
   var nickel = new Coin(5);
   var dime = new Coin(10);
@@ -115,4 +116,61 @@ describe("Machine", function() {
     });
 
   });
+
+beforeEach(function() {
+    machine = new Machine(5, 5, 5);
+    inventory = new Inventory(3, 3, 3);
+  }); 
+
+  describe("gives correct change", function() {
+
+    it("for four quarters", function() {
+      machine.insertCoin(quarter);
+      machine.insertCoin(quarter);
+      machine.insertCoin(quarter);
+      machine.insertCoin(quarter);
+      expect(machine.makeChange(1)).toEqual([2,0,0]);
+    });
+
+    it("for four quarters", function() {
+      machine.insertCoin(quarter);
+      machine.insertCoin(quarter);
+      machine.insertCoin(quarter);
+      machine.insertCoin(quarter);
+      expect(machine.makeChange(0)).toEqual([0,0,0]);
+    });
+
+    it("for four quarters", function() {
+      machine.insertCoin(quarter);
+      machine.insertCoin(quarter);
+      machine.insertCoin(quarter);
+      machine.insertCoin(quarter);
+      expect(machine.makeChange(2)).toEqual([1,1,0]);
+    });
+
+    it("for four quarters", function() {
+      machine.insertCoin(quarter);
+      machine.insertCoin(dime);
+      machine.insertCoin(dime);
+      machine.insertCoin(dime);
+      expect(machine.makeChange(1)).toEqual([0,0,1]);
+    });
+
+    it("cannot give correct change", function(){
+      machine = new Machine(0, 0, 0);
+      expect(machine.makeChange(0)).toBeFalsy;
+    });
+
+    it("cannot give correct change", function(){
+      machine = new Machine(0, 0, 1);
+      expect(machine.makeChange(0)).toBeFalsy;
+    });
+
+    it("cannot give correct change", function(){
+      machine = new Machine(1, 1, 1);
+      expect(machine.makeChange(0)).toBeFalsy;
+    });
+
+  });
+
 });

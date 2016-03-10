@@ -1,8 +1,9 @@
 function Machine(Nickels, Dimes, Quarters)
 {
-    this.Nickels = Nickels;
-    this.Dimes = Dimes;
-    this.Quarters = Quarters;
+    nickelsStored = Nickels;
+    dimesStored = Dimes;
+    quartersStored = Quarters;
+    this.Money = nickelsStored * 5 + dimesStored * 10 + quartersStored * 25;
 
     var coinQueue = {};
 
@@ -55,9 +56,11 @@ function Machine(Nickels, Dimes, Quarters)
     }
 
     function displayMessage(){
-    	if(coinQueue["Total"] == 0)
+    	if(coinQueue["Total"] == 0 && canGiveChange())
             return String("INSERT COINS");
         else {
+            if(coinQueue["Total"] == 0)
+                return String("EXACT CHANGE ONLY");
             if(coinQueue["Total"] < 100)
                 return String(coinQueue["Total"]);
             else
@@ -76,7 +79,9 @@ function Machine(Nickels, Dimes, Quarters)
                     return "PRICE";
                 } else{
                     if (Inventory.purchase(Item)){
+                        storeCoins();
                         resetQueue();
+                        makeChange(0);
                         return "THANK YOU";
                     }
                     else
@@ -88,7 +93,9 @@ function Machine(Nickels, Dimes, Quarters)
                     return "PRICE";
                 } else{
                     if (Inventory.purchase(Item)){
+                        storeCoins();
                         resetQueue();
+                        makeChange(1);
                         return "THANK YOU";
                         
                     }
@@ -102,7 +109,9 @@ function Machine(Nickels, Dimes, Quarters)
                     return "PRICE";
                 } else{
                     if (Inventory.purchase(Item)){
+                        storeCoins();
                         resetQueue();
+                        makeChange(2);
                         return "THANK YOU";
                         
                     }
@@ -114,6 +123,98 @@ function Machine(Nickels, Dimes, Quarters)
             break;}
     }
 
+/* Going for a very simple approach. Highest possible demonination first, then second highest possible
+etc. */
+    function makeChange(Item){
+        
+        var cost;
+        var difference;
+        var quartersBack = 0;
+        var dimesBack = 0;
+        var nickelsBack = 0;
+        var change = new Array(3);
+
+        var temp;
+
+        if(Item == 0)
+            cost = 100;
+        if(Item == 1)
+            cost = 50;
+        if(Item == 2)
+            cost = 65;
+
+        difference = coinQueue["Total"] - cost;
+
+        if(difference < 0)
+            difference *= -1;
+
+        if(difference > this.Money)
+            return false;
+
+        temp = Math.floor(difference / 25);
+
+        if(quartersStored > 0 && quartersStored >= temp){
+            quartersBack = temp;
+            quartersStored -= temp;
+            difference -= temp * 25;
+        }
+
+        if(quartersStored > 0 && quartersStored < temp){
+            quartersBack = quartersStored;
+            difference -= quartersStored * 25;
+            quartersStored = 0;
+        }
+
+        temp = Math.floor(difference / 10);
+
+        if(dimesStored > 0 && dimesStored >= temp){
+            dimesBack = temp;
+            dimesStored -= temp;
+            difference -= temp * 10;
+        }
+
+        if(dimesStored > 0 && dimesStored < temp){
+            dimesBack = dimesStored;
+            difference -= dimesStored * 10;
+            dimesStored = 0;
+        }
+
+        temp = Math.floor(difference / 5);
+
+        if(nickelsStored > 0 && nickelsStored >= temp){
+            nickelsBack = temp;
+            nickelsStored -= temp;
+            difference -= temp * 5;
+        }
+
+        if(nickelsStored > 0 && nickelsStored < temp){
+            nickelsBack = nickelsStored;
+            difference -= nickelsStored * 5;
+            nickelsStored = 0;
+        }
+
+        change[0] = quartersBack;
+        change[1] = dimesBack;
+        change[2] = nickelsBack;
+
+        if(difference == 0)
+            return change;
+        else
+            return false;
+
+    }
+
+    function storeCoins(){
+
+        nickelsStored += coinQueue["Nickel"];
+        dimesStored += coinQueue["Dime"];
+        quartersStored += coinQueue["Quarter"];
+    }
+
+    function canGiveChange(){
+        return (makeChange(0) && makeChange(1)) && makeChange(2);
+    }
+
     return{
     	insertCoin: insertCoin,
     	coinReturn: coinReturn,
@@ -121,7 +222,10 @@ function Machine(Nickels, Dimes, Quarters)
     	readTotal: readTotal,
     	displayMessage: displayMessage,
     	queueCount: queueCount,
-        makePurchase: makePurchase
+        makePurchase: makePurchase,
+        storeCoins: storeCoins,
+        makeChange: makeChange,
+        canGiveChange: canGiveChange
     };
 }
 

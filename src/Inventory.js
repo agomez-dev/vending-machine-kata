@@ -1,6 +1,9 @@
 /* For the purposes of this project, we assume that the inventory is static, but can be initialized at will
 by passing the desired amount of each as parameters */
 
+/* I feel like my implementation lends itself more naturally to an Item object than an Inventory object, but
+I'm just going to leave it this way for now */
+
 function Inventory(Cola, Chips, Candy)
 {
     var List = new Array(3);
@@ -15,9 +18,8 @@ function Inventory(Cola, Chips, Candy)
             List[Item] -= 1;
             return true;
         }
-        else
-        {
-        return false;
+        else{
+            return false;
         }
     }
 
@@ -25,19 +27,36 @@ function Inventory(Cola, Chips, Candy)
         return List[0];
     }
 
+    function colaCost(){
+        return 100;
+    }
+
     function chipsCount(){
         return List[1];
 
     }
 
+    function chipsCost(){
+        return 50;
+    }
+
     function candyCount(){
         return List[2];
     }
+
+    function candyCost(){
+        return 65;
+    }
+
+
     return{
     	purchase: purchase,
         chipsCount: chipsCount,
         candyCount: candyCount,
-        colaCount: colaCount
+        colaCount: colaCount,
+        colaCost: colaCost,
+        candyCost: candyCost,
+        chipsCost: chipsCost
     };
 }
 

@@ -1,8 +1,8 @@
 describe("Machine", function() {
 
   var Coin = require("../src/Coin");
-  var Machine = require("../src/Machine");
   var Inventory = require("../src/Inventory");
+  var Machine = require("../src/Machine");
   var machine;
   var nickel = new Coin(5);
   var dime = new Coin(10);
@@ -10,11 +10,15 @@ describe("Machine", function() {
   var penny = new Coin(1);
 
   beforeEach(function() {
-    machine = new Machine(5, 5, 5);
+    machine = new Machine(10, 10, 10);
     
   }); 
 
   describe("for individual coins", function() {
+
+    it("should display initial state of INSERT COINS", function() {
+      expect(machine.displayMessage()).toEqual("INSERT COINS");
+    });
 
     it("should accept nickels", function() {
       machine.insertCoin(nickel);
@@ -118,59 +122,44 @@ describe("Machine", function() {
   });
 
 beforeEach(function() {
-    machine = new Machine(5, 5, 5);
     inventory = new Inventory(3, 3, 3);
+    machine = new Machine(5, 5, 5);  
   }); 
 
-  describe("gives correct change", function() {
+  describe("computes change", function() {
 
-    it("for four quarters", function() {
-      machine.insertCoin(quarter);
-      machine.insertCoin(quarter);
-      machine.insertCoin(quarter);
-      machine.insertCoin(quarter);
-      expect(machine.makeChange(1)).toEqual([2,0,0]);
+    it("can give correct change", function(){
+      expect(machine.checkChange(65)).toBeTruthy();
     });
 
-    it("for four quarters", function() {
-      machine.insertCoin(quarter);
-      machine.insertCoin(quarter);
-      machine.insertCoin(quarter);
-      machine.insertCoin(quarter);
-      expect(machine.makeChange(0)).toEqual([0,0,0]);
+    it("can give correct change", function(){
+      machine = new Machine(1, 3, 0);
+      expect(machine.checkChange(30)).toEqual({ Dime: 3, Quarter: 0, Nickel: 0 });
     });
 
-    it("for four quarters", function() {
-      machine.insertCoin(quarter);
-      machine.insertCoin(quarter);
-      machine.insertCoin(quarter);
-      machine.insertCoin(quarter);
-      expect(machine.makeChange(2)).toEqual([1,1,0]);
+    it("can give correct change", function(){
+      machine = new Machine(4, 0, 3);
+      expect(machine.checkChange(95)).toEqual({ Quarter: 3, Nickel: 4, Dime: 0 });
     });
 
-    it("for four quarters", function() {
-      machine.insertCoin(quarter);
-      machine.insertCoin(dime);
-      machine.insertCoin(dime);
-      machine.insertCoin(dime);
-      expect(machine.makeChange(1)).toEqual([0,0,1]);
-    });
-
-    it("cannot give correct change", function(){
+    it("identifies EXACT CHANGE ONLY states correctly", function(){
       machine = new Machine(0, 0, 0);
-      expect(machine.makeChange(0)).toBeFalsy;
-    });
+      expect(machine.checkChange(95)).toBeFalsy;
+      expect(machine.displayMessage()).toEqual("EXACT CHANGE ONLY");
+    })
 
-    it("cannot give correct change", function(){
-      machine = new Machine(0, 0, 1);
-      expect(machine.makeChange(0)).toBeFalsy;
-    });
+    /*TO DO
+    Alters storedCoin count appropriately
+    */
+  });
 
-    it("cannot give correct change", function(){
-      machine = new Machine(1, 1, 1);
-      expect(machine.makeChange(0)).toBeFalsy;
-    });
+  describe("purchase transactions", function() {
 
+      /*TO DO
+      Test change given out correctly
+
+      Test messages (PRICE, SOLD OUT, THANK YOU) being displayed correctly and appropriately
+      */
   });
 
 });

@@ -1,47 +1,67 @@
+/* For a better user experience, the machine should, in the case that not enough money
+is inserted to purchase a selected item, prioritze telling the customer that the item is sold out. */
+
 function Machine(Nickels, Dimes, Quarters)
 {
-    nickelsStored = Nickels;
-    dimesStored = Dimes;
-    quartersStored = Quarters;
-    this.Money = nickelsStored * 5 + dimesStored * 10 + quartersStored * 25;
+    var storedCoins = {};
+
+    storedCoins["Nickel"] = Nickels;
+    storedCoins["Dime"] = Dimes;
+    storedCoins["Quarter"] = Quarters;
+
+    this.Money = storedCoins["Nickel"] * 5 + storedCoins["Dime"] * 10 + storedCoins["Quarter"]* 25;
+
+    var notEnoughMoneyString = "PRICE";
+    var notEnoughItemString = "SOLD OUT";
+    var successString = "THANK YOU";
+    var defaultString = "INSERT COINS";
+    var notEnoughChangeString = "EXACT CHANGE ONLY";
 
     var coinQueue = {};
+    var coinMap = {};
 
     resetQueue();
 
-    var coinMap = {};
-
-    var nickleWeight = 5;
-	var nickleSize = 0.835;
+    var nickelWeight = 5;
+	var nickelSize = 0.835;
+    var nickelVal = 5;
 
 	var dimeWeight = 2.268;
 	var dimeSize = 0.705;
+    var dimeVal = 10;
 
 	var quarterWeight = 5.670;
 	var quarterSize = 0.955;
+    var quarterVal = 25;
 
-    coinMap[nickleWeight] = "N";
-	coinMap[nickleSize] = "N";
+    coinMap[nickelWeight] = "Nickel";
+	coinMap[nickelSize] = "Nickel";
+    coinMap[nickelVal] = "Nickel";
 
-	coinMap[dimeWeight] = "D";
-	coinMap[dimeSize] = "D";
+	coinMap[dimeWeight] = "Dime";
+	coinMap[dimeSize] = "Dime";
+    coinMap[dimeVal] = "Dime";
 
-	coinMap[quarterWeight] = "Q";
-	coinMap[quarterSize] = "Q";
+	coinMap[quarterWeight] = "Quarter";
+	coinMap[quarterSize] = "Quarter";
+    coinMap[quarterVal] = "Quarter";
 
     
 
     function insertCoin(Coin){
 
-    	if(coinMap[String(Coin.weight)] ==  coinMap[String(Coin.size)] && coinMap[String(Coin.size)] != undefined)
-    	{
+    	if(coinMap[String(Coin.weight)] ==  coinMap[String(Coin.size)] && coinMap[String(Coin.size)] != undefined){
     		coinQueue[Coin.name] += 1;
     		coinQueue["Total"] += Coin.value;
-    	}
+    	} else{
+            $("textarea#CoinReturn").val(JSON.stringify(Coin.name));
+        }
+
     }
 
     function coinReturn(){
-    	resetQueue();
+        $("textarea#CoinReturn").val(JSON.stringify(coinQueue));
+        resetQueue();
     }
 
     function resetQueue(){
@@ -55,11 +75,11 @@ function Machine(Nickels, Dimes, Quarters)
     	return coinQueue["Total"];
     }
 
-    function displayMessage(){
-    	if(coinQueue["Total"] == 0 && canGiveChange())
+    function displayMessage(Message){
+    	if(coinQueue["Total"] == 0 && !exactChangeOnly())
             return String("INSERT COINS");
         else {
-            if(coinQueue["Total"] == 0)
+            if(coinQueue["Total"] == 0 && exactChangeOnly())
                 return String("EXACT CHANGE ONLY");
             if(coinQueue["Total"] < 100)
                 return String(coinQueue["Total"]);
@@ -71,148 +91,158 @@ function Machine(Nickels, Dimes, Quarters)
     function queueCount(Coin){
     	return coinQueue[Coin.name];
     }
-/* Not a very DRY method, but this was towards the end of it */
+
+/*Some of this following code could be extracted into a helper method. There's
+a lot of repetition here */
+
     function makePurchase(Item){
+
+        var change;
         switch(Item){
             case 0:
-                if(coinQueue["Total"] < 100){
-                    return "PRICE";
+                if(Inventory.colaCount() <= 0){
+                    return notEnoughItemString;
+                }
+                if(coinQueue["Total"] < Inventory.colaCost()){
+                    return notEnoughMoneyString;
                 } else{
                     if (Inventory.purchase(Item)){
                         storeCoins();
+                        change = checkChange(calcChangeNeeded(Inventory.colaCost()));
                         resetQueue();
-                        makeChange(0);
-                        return "THANK YOU";
+                        $("textarea#CoinReturn").val(JSON.stringify(coinQueue));
+                        return successString;
                     }
-                    else
-                        return "SOLD OUT";
                 }
             break;
             case 1:
-                if(coinQueue["Total"] < 50){
-                    return "PRICE";
+                if(Inventory.chipsCount() <= 0){
+                    return notEnoughItemString;
+                }
+                if(coinQueue["Total"] < Inventory.chipsCost()){
+                    return notEnoughMoneyString;
                 } else{
                     if (Inventory.purchase(Item)){
                         storeCoins();
+                        change = checkChange(calcChangeNeeded(Inventory.colaCost()));
                         resetQueue();
-                        makeChange(1);
-                        return "THANK YOU";
+                        $("textarea#CoinReturn").val(JSON.stringify(change));
+                        return successString;
                         
                     }
-                    else
-                        return "SOLD OUT";
                 }
                 
             break;
             case 2:
-                if(coinQueue["Total"] < 65){
-                    return "PRICE";
+                if(Inventory.candyCount() <= 0){
+                    return notEnoughItemString;
+                }
+                if(coinQueue["Total"] < Inventory.candyCost()){
+                    return notEnoughMoneyString;
                 } else{
                     if (Inventory.purchase(Item)){
                         storeCoins();
+                        change = checkChange(calcChangeNeeded(Inventory.colaCost()));
                         resetQueue();
-                        makeChange(2);
-                        return "THANK YOU";
-                        
+                        $("textarea#CoinReturn").val(JSON.stringify(change));
+                        return successString;
                     }
-                    else
-                        return "SOLD OUT";
                 }
             break;
             default:
-            break;}
+            break;
+        }
     }
 
-/* Going for a very simple approach. Highest possible demonination first, then second highest possible
-etc. */
-    function makeChange(Item){
+    function calcChangeNeeded(ItemCost){
+        return coinQueue["Total"] - ItemCost;
+    }
+
+    function checkChange(changeNeeded){
+
+        var denominationOrderArray =  [[ 25, 10, 5 ],
+                                      [ 25, 5, 10 ],
+                                      [ 10, 25, 5 ],
+                                      [ 10, 5, 25 ],
+                                      [ 5, 25, 10 ],
+                                      [ 5, 10, 25 ]];
+        var result;
+        var translatedResult;
+
+        for(var i = 0; i < 6; i++){
+
+            result = makeChange(changeNeeded, denominationOrderArray[i]);
+            if(result){
+                return result;
+            }
+        }
+        return false;
+    }
+
+/* Brute forcing this, because I don't want to spend too much time on this and there are only 
+six possible combinations */
+    function makeChange(changeNeeded, denominationOrder){
         
-        var cost;
-        var difference;
-        var quartersBack = 0;
-        var dimesBack = 0;
-        var nickelsBack = 0;
-        var change = new Array(3);
-
         var temp;
+        var results = {};
 
-        if(Item == 0)
-            cost = 100;
-        if(Item == 1)
-            cost = 50;
-        if(Item == 2)
-            cost = 65;
+/* Some of this could go into a helper function */
 
-        difference = coinQueue["Total"] - cost;
+        temp = Math.floor(changeNeeded/denominationOrder[0]);
 
-        if(difference < 0)
-            difference *= -1;
-
-        if(difference > this.Money)
+        if(storedCoins[coinMap[denominationOrder[0]]] < temp){
             return false;
-
-        temp = Math.floor(difference / 25);
-
-        if(quartersStored > 0 && quartersStored >= temp){
-            quartersBack = temp;
-            quartersStored -= temp;
-            difference -= temp * 25;
+        } else{
+            results[coinMap[denominationOrder[0]]] = temp;
+            changeNeeded -= temp * denominationOrder[0];
         }
 
-        if(quartersStored > 0 && quartersStored < temp){
-            quartersBack = quartersStored;
-            difference -= quartersStored * 25;
-            quartersStored = 0;
-        }
+        if(changeNeeded <= 0){
+            return results;
+        } 
 
-        temp = Math.floor(difference / 10);
+        temp = Math.floor(changeNeeded/denominationOrder[1]);
 
-        if(dimesStored > 0 && dimesStored >= temp){
-            dimesBack = temp;
-            dimesStored -= temp;
-            difference -= temp * 10;
-        }
-
-        if(dimesStored > 0 && dimesStored < temp){
-            dimesBack = dimesStored;
-            difference -= dimesStored * 10;
-            dimesStored = 0;
-        }
-
-        temp = Math.floor(difference / 5);
-
-        if(nickelsStored > 0 && nickelsStored >= temp){
-            nickelsBack = temp;
-            nickelsStored -= temp;
-            difference -= temp * 5;
-        }
-
-        if(nickelsStored > 0 && nickelsStored < temp){
-            nickelsBack = nickelsStored;
-            difference -= nickelsStored * 5;
-            nickelsStored = 0;
-        }
-
-        change[0] = quartersBack;
-        change[1] = dimesBack;
-        change[2] = nickelsBack;
-
-        if(difference == 0)
-            return change;
-        else
+        if(storedCoins[coinMap[denominationOrder[1]]] < temp){
             return false;
+        } else{
+            results[coinMap[denominationOrder[1]]] = temp;
+            changeNeeded -= temp * denominationOrder[1];
+        }
 
+        if(changeNeeded <= 0){
+            return results;
+        } 
+
+        temp = Math.floor(changeNeeded/denominationOrder[2]);
+
+        if(storedCoins[coinMap[denominationOrder[2]]] < temp){
+            return false;
+        } else{
+            results[coinMap[denominationOrder[2]]] = temp;
+            changeNeeded -= temp * denominationOrder[2];
+        }
+
+/*More of a sanity check than anything else */
+        if(changeNeeded <= 0){
+            return results;
+        } else{
+            return false;
+        }
     }
 
     function storeCoins(){
 
-        nickelsStored += coinQueue["Nickel"];
-        dimesStored += coinQueue["Dime"];
-        quartersStored += coinQueue["Quarter"];
+        storedCoins["Nickel"] += coinQueue["Nickel"];
+        storedCoins["Dime"] += coinQueue["Dime"];
+        storedCoins["Quarter"] += coinQueue["Quarter"];
     }
 
-    function canGiveChange(){
-        return (makeChange(0) && makeChange(1)) && makeChange(2);
+    function exactChangeOnly(){
+        if(checkChange(100) && checkChange(65) && checkChange(50))
+            return false;
+        else
+            return true;
     }
 
     return{
@@ -224,8 +254,8 @@ etc. */
     	queueCount: queueCount,
         makePurchase: makePurchase,
         storeCoins: storeCoins,
-        makeChange: makeChange,
-        canGiveChange: canGiveChange
+        checkChange: checkChange,
+        exactChangeOnly: exactChangeOnly
     };
 }
 

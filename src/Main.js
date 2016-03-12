@@ -40,7 +40,7 @@ $("#Cola").click(function(){
 	$("#display").attr("placeholder", Purchase);
 	if(Purchase == "PRICE"){
 	setTimeout(function(){
-    $("#display").attr("placeholder", String(1.00));
+    $("#display").attr("placeholder", String(1.00.toFixed(2)));
 }, 750);
 }
 	setTimeout(function(){
@@ -67,7 +67,7 @@ $("#Candy").click(function(){
 	$("#display").attr("placeholder", Purchase);
 	if(Purchase == "PRICE"){
 	setTimeout(function(){
-    $("#display").attr("placeholder", String(0.65));
+    $("#display").attr("placeholder", String(0.65.toFixed(2)));
 }, 750);}
 	setTimeout(function(){
     $("#display").attr("placeholder", Machine.displayMessage());

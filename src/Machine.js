@@ -109,7 +109,7 @@ a lot of repetition here */
                         storeCoins();
                         change = checkChange(calcChangeNeeded(Inventory.colaCost()));
                         resetQueue();
-                        $("textarea#CoinReturn").val(JSON.stringify(coinQueue));
+                        $("textarea#CoinReturn").val(JSON.stringify(change));
                         return successString;
                     }
                 }
@@ -123,7 +123,7 @@ a lot of repetition here */
                 } else{
                     if (Inventory.purchase(Item)){
                         storeCoins();
-                        change = checkChange(calcChangeNeeded(Inventory.colaCost()));
+                        change = checkChange(calcChangeNeeded(Inventory.chipsCost()));
                         resetQueue();
                         $("textarea#CoinReturn").val(JSON.stringify(change));
                         return successString;
@@ -141,7 +141,7 @@ a lot of repetition here */
                 } else{
                     if (Inventory.purchase(Item)){
                         storeCoins();
-                        change = checkChange(calcChangeNeeded(Inventory.colaCost()));
+                        change = checkChange(calcChangeNeeded(Inventory.candyCost()));
                         resetQueue();
                         $("textarea#CoinReturn").val(JSON.stringify(change));
                         return successString;

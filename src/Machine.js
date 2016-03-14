@@ -56,7 +56,6 @@ function Machine(Nickels, Dimes, Quarters)
     	} else{
             $("textarea#CoinReturn").val(JSON.stringify(Coin.name));
         }
-
     }
 
     function coinReturn(){

@@ -134,12 +134,12 @@ beforeEach(function() {
 
     it("can give correct change", function(){
       machine = new Machine(1, 3, 0);
-      expect(machine.checkChange(30)).toEqual({ Dime: 3, Quarter: 0, Nickel: 0 });
+      expect(machine.checkChange(30)).toEqual({ Dime: 3});
     });
 
     it("can give correct change", function(){
       machine = new Machine(4, 0, 3);
-      expect(machine.checkChange(95)).toEqual({ Quarter: 3, Nickel: 4, Dime: 0 });
+      expect(machine.checkChange(95)).toEqual({ Quarter: 3, Nickel: 4});
     });
 
     it("identifies EXACT CHANGE ONLY states correctly", function(){
